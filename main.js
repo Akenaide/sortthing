@@ -58,10 +58,11 @@ async function sort() {
             toggle(previous, ["number", "active"]);
             toggle(current, ["number", "active"]);
             
-            display.textContent = `Checking if ${previous.textContent} > ${current.textContent} and swap them if true. \n The current value of swapped = ${changed}`;
+            display.innerText = `Checking if ${previous.textContent} > ${current.textContent} and swap them if true. \n The current value of swapped = ${changed}`;
 
             if (parseInt(previous.textContent) > parseInt(current.textContent)) {
                 changed = true;
+                display.innerText = `Swapping positions of ${previous.textContent} & ${current.textContent}. \n Set swapped = ${changed}`;
                 container.insertBefore(current, previous);
             }
             i++;
@@ -69,7 +70,7 @@ async function sort() {
             toggle(previous, ["number", "active"]);
             toggle(current, ["number", "active"]);
             }
-
+            display.textContent = `Mark this element as sorted`;
             toggle(elems[elems.length - j - 1], ["finish"]);
             await sleep(350);
             toggle(elems[elems.length - j - 1], ["finish"]);

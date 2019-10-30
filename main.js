@@ -24,10 +24,17 @@ function parseVal() {
 }
 
 function setLength(input) {
-    for(const el of input) {
-                let size = parseInt(el.textContent) * 10;
-                el.setAttribute("style", "height:" + size + "px");
+    if(input.length > 0) {
+        for(const el of input) {
+                    let size = parseInt(el.textContent) * 10;
+                    el.setAttribute("style", "height:" + size + "px");
+        }
     }
+    else {
+        let size = parseInt(input.textContent) * 10;
+        input.setAttribute("style", "height:" + size + "px");
+    }
+
 }
 
 function toggle(el, names) {
@@ -40,42 +47,77 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function sort() {
+async function bubble() { // bubble
     let changed = true;
     let current;
     const elems = document.getElementsByClassName("number")
     const container = document.getElementById("container")
     const display = document.getElementById("display");
+
     let j = 0;
-    while (changed) {
-        changed = false;
-        let i = 1;
+        while (changed) {
+            changed = false;
+            let i = 1;
 
-        while( i < elems.length - j) {
+            while( i < elems.length - j) {
 
-            current = elems[i];
-            let previous = elems[i-1];
-            toggle(previous, ["number", "active"]);
-            toggle(current, ["number", "active"]);
-            
-            display.innerText = `Checking if ${previous.textContent} > ${current.textContent} and swap them if true. \n The current value of swapped = ${changed}`;
+                current = elems[i];
+                let previous = elems[i-1];
+                toggle(previous, ["number", "active"]);
+                toggle(current, ["number", "active"]);
+                
+                display.innerText = `Checking if ${previous.textContent} > ${current.textContent} and swap them if true.`;
 
-            if (parseInt(previous.textContent) > parseInt(current.textContent)) {
-                changed = true;
-                display.innerText = `Swapping positions of ${previous.textContent} & ${current.textContent}. \n Set swapped = ${changed}`;
-                container.insertBefore(current, previous);
+                if (parseInt(previous.textContent) > parseInt(current.textContent)) {
+                    changed = true;
+                    container.insertBefore(current, previous);
+                }
+                i++;
+                await sleep(1000 - document.getElementById('speed').value)
+                toggle(previous, ["number", "active"]);
+                toggle(current, ["number", "active"]);
             }
-            i++;
-            await sleep(1000 - document.getElementById('speed').value)
-            toggle(previous, ["number", "active"]);
-            toggle(current, ["number", "active"]);
-            }
-            display.textContent = `Mark this element as sorted`;
-            toggle(elems[elems.length - j - 1], ["finish"]);
-            await sleep(350);
-            toggle(elems[elems.length - j - 1], ["finish"]);
-        j++;
+                display.textContent = `Mark this element as sorted`;
+                toggle(elems[elems.length - j - 1], ["finish"]);
+                await sleep(350);
+                toggle(elems[elems.length - j - 1], ["finish"]);
+            j++;
+        }
     }
+
+async function insertion() {
+    let changed = true;
+    let current;
+    const elems = document.getElementsByClassName("number")
+    const container = document.getElementById("container")
+    const display = document.getElementById("display");
+
+    for (var i = 1; i < elems.length; i++) {
+        var tmp = elems[i].cloneNode("false"); 
+        toggle(elems[i], ["tmp"]);
+        await sleep(350);
+        for (var j = i - 1; j >= 0 && (parseInt(elems[j].textContent) > parseInt(tmp.textContent)); j--) {
+            container.insertBefore(elems[j + 1], elems[j]);
+            toggle(elems[j + 1], ["active"])
+            await sleep(1000 - document.getElementById('speed').value)
+            toggle(elems[j + 1], ["active"])
+        }
+        toggle(elems[j + 1], ["tmp", "finish"]);
+        await sleep(350);
+        toggle(elems[j + 1], ["finish"]);
+
+    }
+}
+
+ function sort() {
+    
+
+    // if(sortType === '1') // bubble
+    // if(sortType === '2') // insertion
+    // if(sortType === '3') // quick
+    const sortType = document.getElementById("selectBox").value;
+    if(sortType === '1') bubble();
+    else if(sortType === '2') insertion();
 }
 
 // function main() {

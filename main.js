@@ -86,38 +86,33 @@ async function bubble() { // bubble
     }
 
 async function insertion() {
-    let changed = true;
-    let current;
     const elems = document.getElementsByClassName("number")
     const container = document.getElementById("container")
-    const display = document.getElementById("display");
-
+    const display = document.getElementById("display"); 
+    toggle(elems[0], ["finish"]);
     for (var i = 1; i < elems.length; i++) {
-        var tmp = elems[i].cloneNode("false"); 
-        toggle(elems[i], ["tmp"]);
+        if(i === 1) display.textContent = `Mark first element ${elems[0].textContent} as sorted`;
         await sleep(350);
-        for (var j = i - 1; j >= 0 && (parseInt(elems[j].textContent) > parseInt(tmp.textContent)); j--) {
+        for (var j = i - 1; j >= 0 && (parseInt(elems[j].textContent) > parseInt(elems[j + 1].textContent)); j--) {
+            display.innerText = `${elems[j].textContent} is bigger than ${elems[j + 1].textContent} \n Move ${elems[j].textContent} to right.`;
             container.insertBefore(elems[j + 1], elems[j]);
-            toggle(elems[j + 1], ["active"])
             await sleep(1000 - document.getElementById('speed').value)
-            toggle(elems[j + 1], ["active"])
         }
-        toggle(elems[j + 1], ["tmp", "finish"]);
         await sleep(350);
-        toggle(elems[j + 1], ["finish"]);
+        toggle(elems[j + 1], ["finish"]);  
 
     }
+    display.textContent = `Done`;
 }
 
  function sort() {
-    
-
     // if(sortType === '1') // bubble
     // if(sortType === '2') // insertion
     // if(sortType === '3') // quick
     const sortType = document.getElementById("selectBox").value;
-    if(sortType === '1') bubble();
-    else if(sortType === '2') insertion();
+    if(sortType === 'bubble') bubble();
+    else if(sortType === 'insertion') insertion();
+    else if(sortType === 'quick') quick();
 }
 
 // function main() {
